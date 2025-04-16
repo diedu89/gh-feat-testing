@@ -36,7 +36,7 @@ jobs:
 
       - name: Commit version changes
         run: |
-          git config user.name "${ GITHUB_ACTOR }"
+          git config user.name "${GITHUB_ACTOR}"
           git config user.email ""
           git add .
           git commit -m "chore: bump version to ${{ env.NEW_VERSION }}"
