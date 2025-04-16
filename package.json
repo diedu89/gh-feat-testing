@@ -1,0 +1,19 @@
+{
+  "name": "diedu89-gh-test-repo",
+  "version": "0.0.0",
+  "description": "test repo for GH features",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "changeset": "changeset",
+    "version": "changeset version",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@changesets/cli": "^2.29.1"
+  }
+}

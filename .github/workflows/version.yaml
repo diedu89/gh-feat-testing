@@ -1,0 +1,50 @@
+name: Changesets Version and Tag
+
+on:
+  workflow_dispatch:
+
+jobs:
+  version-and-tag:
+    name: Run Changesets Version and Tag
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Changesets version
+        run: npm run version
+
+      - name: Get new version
+        id: get-version
+        run: echo "NEW_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
+
+      - name: Commit version changes
+        run: |
+          git config user.name "GitHub Action - Version"
+          git config user.email ""
+          git add .
+          git commit -m "chore: bump version to ${{ env.NEW_VERSION }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push changes to main
+        run: git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create a tag for the new version
+        run: |
+          git tag "v${{ env.NEW_VERSION }}"
+          git push origin "v${{ env.NEW_VERSION }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
