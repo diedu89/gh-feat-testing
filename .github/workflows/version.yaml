@@ -45,6 +45,7 @@ jobs:
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v5
         with:
+          token: ${{ secrets.PAT_TOKEN }}
           commit-message: "chore: bump version to ${{ env.NEW_VERSION }}"
           branch: "bump-version-${{ env.NEW_VERSION }}"
           title: "Bump version to ${{ env.NEW_VERSION }}"
