@@ -34,26 +34,19 @@ jobs:
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
         working-directory: subdir
 
-      - name: Commit version changes
+      - name: Git config
         run: |
           git config user.name "${GITHUB_ACTOR}"
-          git config user.email ""
-          git add .
-          git commit -m "chore: bump version to ${{ env.NEW_VERSION }}"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: subdir
 
-      - name: Push changes to main
-        run: git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: subdir
-
-      - name: Create a tag for the new version
-        run: |
-          git tag "v${{ env.NEW_VERSION }}"
-          git push origin "v${{ env.NEW_VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: subdir
+      - name: Create a pull request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "chore: bump version to ${{ env.NEW_VERSION }}"
+          branch: "bump-version-${{ env.NEW_VERSION }}"
+          title: "Bump version to ${{ env.NEW_VERSION }}"
+          body: "This pull request includes the version bump to v${{ env.NEW_VERSION }}."
+          labels: "version, automated"
