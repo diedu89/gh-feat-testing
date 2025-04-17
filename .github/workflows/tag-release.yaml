@@ -26,7 +26,7 @@ jobs:
         run: |
           VERSION=$(node -e "console.log(require('./package.json').version)")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          working-directory: subdir
+        working-directory: subdir
 
       - name: Create and push tag
         run: |
