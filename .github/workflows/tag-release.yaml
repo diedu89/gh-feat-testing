@@ -1,0 +1,30 @@
+name: Tag and Release
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  handle-merged-version-pr:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'version')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get version from package.json
+        id: get-version
+        run: |
+          VERSION=$(node -e "console.log(require('./package.json').version)")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v${{ env.VERSION }}"
+          git push origin "v${{ env.VERSION }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
