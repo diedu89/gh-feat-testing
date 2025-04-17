@@ -14,11 +14,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: subdir/package-lock.json
+
       - name: Get version from package.json
         id: get-version
         run: |
           VERSION=$(node -e "console.log(require('./package.json').version)")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          working-directory: subdir
 
       - name: Create and push tag
         run: |
