@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-tags: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -27,6 +29,14 @@ jobs:
           VERSION=$(node -e "console.log(require('./package.json').version)")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
         working-directory: subdir
+
+      - name: Check if tag already exists
+        id: check-tag
+        run: |
+          if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
+            echo "Tag v${{ env.VERSION }} already exists. Exiting workflow."
+            exit 1
+          fi
 
       - name: Create and push tag
         run: |
